@@ -1,6 +1,6 @@
 {
-  "name": "ssi-webpack-plugin",
-  "version": "1.0.8",
+  "name": "ssi-webpack-five-plugin",
+  "version": "1.0.0",
   "description": "ssi include webpack plugin",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xiaomingplus/ssi-webpack-plugin.git"
+    "url": "git+https://github.com/ISalikhzyanov/ssi-webpack-plugin.git"
   },
   "keywords": [
     "webpack",
@@ -18,9 +18,9 @@
   "author": "xiaomingplus fork by studzw",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xiaomingplus/ssi-webpack-plugin/issues"
+    "url": "https://github.com/ISalikhzyanov/ssi-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/xiaomingplus/ssi-webpack-plugin/#readme",
+  "homepage": "https://github.com/ISalikhzyanov/ssi-webpack-plugin/#readme",
   "devDependencies": {
     "glob": "^7.1.1",
     "html-loader": "^0.4.5",
