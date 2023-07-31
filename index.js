@@ -18,12 +18,12 @@ class SSICompileWebpackplugin {
 
     /**
      * Creates an instance of SSICompileWebpackplugin.
-     * 
+     *
      * @param {String} publicPath 资源基础路径,为空时不处理路径，不为空的时将拼接路径的`${publicPath}/${path.basename}`
      * @param {String} localBaseDir ssi本地路径的基础路径前缀
      * @param {String} ext 需要处理的后缀名，多个后缀可使用`|`分割
      * @param {Boolean} minify true压缩, false不压缩
-     * 
+     *
      * @memberOf SSICompileWebpackplugin
      */
     constructor(options) {
@@ -41,9 +41,9 @@ class SSICompileWebpackplugin {
     }
 
 
-    apply(compile, callback) {
+    apply(compiler, callback) {
 
-        compile.plugin('emit', (compilation, callback) => {
+        compiler.hooks.emit.tapAsync('emit', (compilation, callback) => {
 
             const htmlNameArr = this.addFileToWebpackAsset(compilation)
 
@@ -52,8 +52,8 @@ class SSICompileWebpackplugin {
             }
 
             eachPromise(htmlNameArr.map((item) => {
-                    return this.replaceSSIFile(compilation, item)
-                }))
+                return this.replaceSSIFile(compilation, item)
+            }))
                 .then(() => {
                     callback()
                 }, () => {
@@ -82,29 +82,29 @@ class SSICompileWebpackplugin {
         let replacePath = pathRewrite.create(this.setting.pathRewrite);
         return new Promise((resolve, reject) => {
             eachPromise(fileArr.map((item) => {
-                    let src = item.split('"')[1];
-                    if (replacePath) {
-                        src = replacePath(src);
+                let src = item.split('"')[1];
+                if (replacePath) {
+                    src = replacePath(src);
+                }
+                const isVar = /\${(.+?)}/.test(src);
+                if (isVar) {
+                    var variableMap = this.setting.variable;
+                    try {
+                        src = src.replace(/\${(.+?)}/g, function (matchItem) {
+                            var variable = matchItem.match(/\${(.+?)}/)
+                            if (variableMap[variable[1]]) {
+                                return variableMap[variable[1]]
+                            } else {
+                                return ""
+                            }
+                        })
+                    } catch (e) {
+                        throw new Error(e)
                     }
-                    const isVar = /\${(.+?)}/.test(src);
-                    if (isVar) {
-                        var variableMap = this.setting.variable;
-                        try {
-                            src = src.replace(/\${(.+?)}/g, function (matchItem) {
-                                var variable = matchItem.match(/\${(.+?)}/)
-                                if (variableMap[variable[1]]) {
-                                    return variableMap[variable[1]]
-                                } else {
-                                    return ""
-                                }
-                            })
-                        } catch (e) {
-                            throw new Error(e)
-                        }
 
-                    }
-                    return getSource(src, this.setting)
-                }))
+                }
+                return getSource(src, this.setting)
+            }))
                 .then((sucessResult) => {
 
                     fileArr.forEach((i, j) => {
